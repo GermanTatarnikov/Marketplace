@@ -51,3 +51,4 @@ insert into orders_products (orders_id, products_id)
 
 insert into orders_products (orders_id, products_id)
     values (7, 5);
+

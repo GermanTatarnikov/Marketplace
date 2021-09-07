@@ -41,7 +41,7 @@ public class OrderService {
     OrderMapper mapper;
 
     @Transactional
-    public OrderDto create(OrderDto dto, List<Long> productId) {
+    public OrderDto create(OrderDto dto) {
         if (dto.getId() != null) {
             throw new CheckException(NOT_NULL_ID);
         }
@@ -51,19 +51,36 @@ public class OrderService {
         entity.setOrderNumber(String.valueOf(now.hashCode()));
         entity.setEmail(dto.getEmail());
         orderRepository.save(entity);
-//        createOrderProducts(, productId);
         return mapper.toDto(entity);
     }
 
+    @Transactional
+    public OrderDto addProducts(OrderDto dto, List<Long> productId) {
+        if (dto.getId() == null) {
+            throw new CheckException(NOT_FOUND_ORDER);
+        }
+
+        Order orderEntity = orderRepository.findById(dto.getId())
+                .orElseThrow(() -> new CheckException(NOT_FOUND_ORDER));
+        createOrderProducts(dto, productId);
+        List<OrderProduct> orderProductList = new ArrayList<>();
+        for (Long productsId : productId) {
+            OrderProduct orderProductEntity = orderProductRepository
+                    .getByOrderIdAndProductId(orderEntity.getId(), productsId);
+            orderProductList.add(orderProductEntity);
+        }
+        orderEntity.setOrderProducts(orderProductList);
+        return mapper.toDto(orderEntity);
+    }
 
     private void createOrderProducts(OrderDto dto, List<Long> productId) {
+        Order orderEntity = orderRepository.findById(dto.getId())
+                .orElseThrow(() -> new CheckException(NOT_FOUND_ORDER));
         for (Long productsId : productId) {
             OrderProduct orderProduct = new OrderProduct();
             Product productEntity = productRepository.findById(productsId)
                     .orElseThrow(() -> new CheckException(NOT_FOUND_PRODUCT));
-            Order orderEntity = orderRepository.findById(dto.getId())
-                    .orElseThrow(() -> new CheckException(NOT_FOUND_ORDER));
-            if (orderProductRepository.findByOrderIdAndProductId(orderEntity.getId(), productEntity.getId()).isEmpty()) {
+            if (orderProductRepository.getByOrderIdAndProductId(orderEntity.getId(), productEntity.getId()) != null) {
                 throw new CheckException("Связь уже существует.");
             }
             orderProduct.setOrder(orderEntity);
@@ -77,16 +94,16 @@ public class OrderService {
         return mapper.toDtoList(orderList);
     }
 
-    public List<OrderDto> findAllBetweenDates(LocalDateTime sDate, LocalDateTime eDate) {
+    public List<OrderDto> getAllBetweenDates(LocalDateTime sDate, LocalDateTime eDate) {
         if (eDate.isBefore(sDate)) {
             throw new CheckException("Неверный запрос");
         }
-        List<Order> orderList = orderRepository.findAllByDateOfCreationBetween(sDate, eDate);
+        List<Order> orderList = orderRepository.getAllByDateOfCreationBetween(sDate, eDate);
         return mapper.toDtoList(orderList);
     }
 
-    public List<OrderDto> findAllByProductArticle(Long article) {
-        List<Order> orderList = orderRepository.findAllByArticle(article);
+    public List<OrderDto> getAllByProductArticle(Long article) {
+        List<Order> orderList = orderRepository.getAllByArticle(article);
         return mapper.toDtoList(orderList);
     }
 

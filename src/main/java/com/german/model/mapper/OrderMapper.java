@@ -14,19 +14,25 @@ public class OrderMapper {
 
     public OrderDto toDto(Order order) {
         OrderDto dto = new OrderDto();
-        dto.setEmail(order.getEmail());
         dto.setId(order.getId());
-        dto.setOrderNumber(order.getOrderNumber());
+        dto.setEmail(order.getEmail());
         dto.setDateOfCreation(order.getDateOfCreation());
-        dto.setProducts(order.getOrderProducts().stream().map(OrderProduct::getProduct).map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setArticle(p.getArticle());
-            productDto.setDeleted(p.getDeleted());
-            productDto.setName(p.getName());
-            productDto.setPrice(p.getPrice());
-            return productDto;
-        }).collect(Collectors.toList()));
+        if (order.getOrderNumber().contains("-")) {
+            dto.setOrderNumber(order.getOrderNumber().substring(1));
+        } else {
+            dto.setOrderNumber(order.getOrderNumber());
+        }
+        if (order.getOrderProducts() != null) {
+            dto.setProducts(order.getOrderProducts().stream().map(OrderProduct::getProduct).map(p -> {
+                ProductDto productDto = new ProductDto();
+                productDto.setId(p.getId());
+                productDto.setArticle(p.getArticle());
+                productDto.setDeleted(p.getDeleted());
+                productDto.setName(p.getName());
+                productDto.setPrice(p.getPrice());
+                return productDto;
+            }).collect(Collectors.toList()));
+        }
         return dto;
     }
 

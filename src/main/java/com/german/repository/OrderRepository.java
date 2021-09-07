@@ -19,11 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 //    List<Order> findAllByEmail(String email);
 
-    Order findByEmail(String email);
+    Order getByEmail(String email);
 
-    List<Order> findAllByDateOfCreationBetween(LocalDateTime sDate, LocalDateTime eDate);
+    List<Order> getAllByDateOfCreationBetween(LocalDateTime sDate, LocalDateTime eDate);
 
     @Query("select o from Order o join OrderProduct op on o.id = op.order.id " +
             "join Product p on p.id = op.product.id where p.article = :article")
-    List<Order> findAllByArticle(Long article);
+    List<Order> getAllByArticle(Long article);
 }
