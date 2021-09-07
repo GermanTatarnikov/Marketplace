@@ -25,8 +25,8 @@ public class OrderController {
     OrderService service;
 
     @PostMapping(ADD_MAPPING)
-    public ResponseEntity<?> add(@RequestBody OrderDto dto) {
-        return ResponseEntity.ok(service.create(dto));
+    public ResponseEntity<?> add(@RequestBody OrderDto dto, @RequestParam List<Long> productId) {
+        return ResponseEntity.ok(service.create(dto, productId));
     }
 
     @GetMapping(GET_ALL_BY_EMAIL_MAPPING)

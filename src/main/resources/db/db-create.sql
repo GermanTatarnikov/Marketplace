@@ -27,7 +27,7 @@ create table orders
 (
     id bigint not null default nextval('orders_id_generator')
         constraint orders_id primary key,
-    order_number integer default md5('date_of_creation') not null,
+    order_number integer not null,
     e_mail varchar(40) not null,
     date_of_creation timestamp without time zone not null,
     list_of_products bigint not null references products(id)

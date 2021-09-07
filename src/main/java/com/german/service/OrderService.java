@@ -41,29 +41,33 @@ public class OrderService {
     OrderMapper mapper;
 
     @Transactional
-    public OrderDto create(OrderDto dto) {
+    public OrderDto create(OrderDto dto, List<Long> productId) {
         if (dto.getId() != null) {
             throw new CheckException(NOT_NULL_ID);
         }
         Order entity = new Order();
+        LocalDateTime now = LocalDateTime.now();
+        entity.setDateOfCreation(now);
+        entity.setOrderNumber(String.valueOf(now.hashCode()));
         entity.setEmail(dto.getEmail());
         orderRepository.save(entity);
+//        createOrderProducts(, productId);
         return mapper.toDto(entity);
     }
 
 
-    private void createOrderProducts(OrderDto dto) {
-        for (ProductDto productDto : dto.getProducts()) {
+    private void createOrderProducts(OrderDto dto, List<Long> productId) {
+        for (Long productsId : productId) {
             OrderProduct orderProduct = new OrderProduct();
-            Product productEntity = productRepository.findById(productDto.getId())
+            Product productEntity = productRepository.findById(productsId)
                     .orElseThrow(() -> new CheckException(NOT_FOUND_PRODUCT));
             Order orderEntity = orderRepository.findById(dto.getId())
                     .orElseThrow(() -> new CheckException(NOT_FOUND_ORDER));
             if (orderProductRepository.findByOrderIdAndProductId(orderEntity.getId(), productEntity.getId()).isEmpty()) {
                 throw new CheckException("Связь уже существует.");
             }
-            orderProduct.setProduct(productEntity);
             orderProduct.setOrder(orderEntity);
+            orderProduct.setProduct(productEntity);
             orderProductRepository.save(orderProduct);
         }
     }

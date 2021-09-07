@@ -16,23 +16,23 @@ insert into products (price, is_deleted, article, name)
 insert into products (price, is_deleted, article, name)
     values (250, false, 4365328, 'Samsung A12');
 
-insert into orders (e_mail)
-    values ('ivan123@mail.ru');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'ivan123@mail.ru', localtimestamp);
 
-insert into orders (e_mail)
-    values ('vna48@mail.ru');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'vna48@mail.ru', localtimestamp);
 
-insert into orders (e_mail)
-    values ('destroyer@yandex.ru');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'destroyer@yandex.ru', localtimestamp);
 
-insert into orders (e_mail)
-    values ('cybergirl2000@gmail.com');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'cybergirl2000@gmail.com', localtimestamp);
 
-insert into orders (e_mail)
-    values ('nimbus2001@mail.ru');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'nimbus2001@mail.ru', localtimestamp);
 
-insert into orders (e_mail)
-    values ('khalisi1994@rambler.ru');
+insert into orders (order_number, e_mail, date_of_creation)
+    values (md5(localtimestamp), 'khalisi1994@rambler.ru', localtimestamp);
 
 insert into orders_products (orders_id, products_id)
     values (3, 1);
@@ -50,4 +50,4 @@ insert into orders_products (orders_id, products_id)
     values (7, 2);
 
 insert into orders_products (orders_id, products_id)
-values (7, 5);
+    values (7, 5);
