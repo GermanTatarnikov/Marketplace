@@ -36,18 +36,18 @@ public class OrderController {
     }
 
     @GetMapping(GET_ALL_BY_EMAIL_MAPPING)
-    public ResponseEntity<List<OrderDto>> getAllByEmail(@RequestParam(name = "email", required = false) String email) {
+    public ResponseEntity<List<OrderDto>> getAllByEmail(@RequestParam(name = "email") String email) {
         return ResponseEntity.ok(service.getAllByEmail(email));
     }
 
     @GetMapping(GET_BY_PRODUCT_ARTICLE_MAPPING)
-    public ResponseEntity<?> findByProductArticle(@RequestParam(name = "article", required = false) Long article) {
+    public ResponseEntity<?> findByProductArticle(@RequestParam(name = "article") Long article) {
         return ResponseEntity.ok(service.getAllByProductArticle(article));
     }
 
     @GetMapping(GET_ALL_BETWEEN_DATES_MAPPING)
-    public ResponseEntity<?> findAllBetweenDates(@RequestParam(name = "sDate", required = false) String sDate,
-                                                 @RequestParam(name = "eDate", required = false) String eDate) {
+    public ResponseEntity<?> findAllBetweenDates(@RequestParam(name = "sDate") String sDate,
+                                                 @RequestParam(name = "eDate") String eDate) {
         return ResponseEntity.ok(service.getAllBetweenDates(LocalDateTime.parse(sDate), LocalDateTime.parse(eDate)));
     }
 

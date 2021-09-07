@@ -92,7 +92,8 @@ public class ProductService {
     public ProductDto delete(Long id) {
         Product entity = repository.findById(id)
                 .orElseThrow(() -> new CheckException(NOT_FOUND_PRODUCT));
-        repository.delete(entity);
+        entity.setDeleted(true);
+        repository.save(entity);
         return mapper.toDto(entity);
     }
 }

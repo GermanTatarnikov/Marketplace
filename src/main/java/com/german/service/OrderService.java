@@ -2,8 +2,6 @@ package com.german.service;
 
 import com.german.exception.CheckException;
 import com.german.model.dto.OrderDto;
-import com.german.model.dto.OrderProductDto;
-import com.german.model.dto.ProductDto;
 import com.german.model.entity.Order;
 import com.german.model.entity.OrderProduct;
 import com.german.model.entity.Product;
@@ -14,14 +12,10 @@ import com.german.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static com.german.exception.CheckExceptionMessages.*;
 
@@ -80,6 +74,9 @@ public class OrderService {
             OrderProduct orderProduct = new OrderProduct();
             Product productEntity = productRepository.findById(productsId)
                     .orElseThrow(() -> new CheckException(NOT_FOUND_PRODUCT));
+            if (productEntity.getDeleted()) {
+                throw new CheckException(PRODUCT_DELETED);
+            }
             if (orderProductRepository.getByOrderIdAndProductId(orderEntity.getId(), productEntity.getId()) != null) {
                 throw new CheckException("Связь уже существует.");
             }
@@ -90,7 +87,7 @@ public class OrderService {
     }
 
     public List<OrderDto> getAllByEmail(String email) {
-        List<Order> orderList = orderRepository.findAllByEmail(email);
+        List<Order> orderList = orderRepository.getAllByEmail(email);
         return mapper.toDtoList(orderList);
     }
 
@@ -103,6 +100,9 @@ public class OrderService {
     }
 
     public List<OrderDto> getAllByProductArticle(Long article) {
+        if (productRepository.findByArticle(article) == null) {
+            throw new CheckException(NOT_FOUND_PRODUCT_ARTICLE);
+        }
         List<Order> orderList = orderRepository.getAllByArticle(article);
         return mapper.toDtoList(orderList);
     }

@@ -15,7 +15,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 //    List<Order> findBetweenTwoDates(LocalDateTime sDate, LocalDateTime eDate);
 
     @Query("select o from Order o where o.email = :email")
-    List<Order> findAllByEmail(String email);
+    List<Order> getAllByEmail(String email);
 
 //    List<Order> findAllByEmail(String email);
 
